@@ -3,7 +3,8 @@ resource "aws_vpc" "ale_vpc" {
  cidr_block = var.vpc_cidr_block
 
  tags = {
-   Name = "${var.app_name}-vpc"
+   name = "${var.app_name}-${var.region}-${var.environment}-vpc"
+   Deployment_Method = "terraform"
  }
 }
 
@@ -12,7 +13,8 @@ resource "aws_internet_gateway" "mainIG" {
   vpc_id = aws_vpc.ale_vpc.id
 
   tags = {
-    Name = "mainIG"
+   name = "${var.app_name}-${var.region}-${var.environment}-internet-gateway"
+   Deployment_Method = "terraform"
   }
 }
 
@@ -23,7 +25,8 @@ resource "aws_subnet" "public-1" {
  cidr_block = var.public_subnet1_cidr_block
 
  tags = {
-   Name = "${var.app_name}-publicsubnet-1"
+   name = "${var.app_name}-${var.region}-${var.environment}-public-subnet1"
+   Deployment_Method = "terraform"
  }
 }
 
@@ -34,7 +37,8 @@ resource "aws_subnet" "public-2" {
   cidr_block = var.public_subnet2_cidr_block
 
   tags = {
-    Name = "${var.app_name}-publicsubnet-2"
+    name = "${var.app_name}-${var.region}-${var.environment}-public-subnet2"
+    Deployment_Method = "terraform"
   }
 }
 # Private subnet 1.
@@ -44,15 +48,18 @@ resource "aws_subnet" "private_1" {
   cidr_block = var.private_subnet1_cidr_block
 
   tags = {
-    Name = "${var.app_name}-private_1"
+    name = "${var.app_name}-${var.region}-${var.environment}-private-subnet"
+    Deployment_Method = "terraform"
   }
 }
 # Nat gateway set up in public-subnet-1.
 resource "aws_nat_gateway" "nat-gw" {
  allocation_id = aws_eip.nat.id
  subnet_id = aws_subnet.public-1.id
+
  tags = {
-   Name = "${var.app_name}-nat-gateway"
+   name = "${var.app_name}-${var.region}-${var.environment}-nat-gw"
+   Deployment_Method = "terraform"
  }
 }
 # Allocates an EIP to the nat gateway.
@@ -72,7 +79,8 @@ resource "aws_route_table" "public_route" {
 
 
   tags = {
-    Name = "public_route"
+    name = "${var.app_name}-${var.region}-${var.environment}-public_route"
+    Deployment_Method = "terraform"
   }
 }
 # Private route table.
@@ -86,7 +94,8 @@ resource "aws_route_table" "private_route" {
 
 
   tags = {
-    Name = "private_route"
+   name = "${var.app_name}-${var.region}-${var.environment}-private_route"
+   Deployment_Method = "terraform"
   }
 }
 

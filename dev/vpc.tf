@@ -10,7 +10,7 @@ module "vpc" {
 module "ec2-security_group" {
   source = "../modules/security_group"
   vpc_id = module.vpc.vpc_id
-  security_group_name = "public"
+  security_group_name = substr("${var.app_name}-${var.region}-${var.environment}-ec2securityGroup", 0,32 )
   sg_ingress_rules = [
     {
       description = "All traffic on port 22"
@@ -32,7 +32,7 @@ module "ec2-security_group" {
 module "ecs-service-security-group" {
   source = "../modules/security_group"
   vpc_id = module.vpc.vpc_id
-  security_group_name = "private"
+  security_group_name = substr("${var.app_name}-${var.region}-${var.environment}-ecsSecurityGroup", 0,32 )
   sg_ingress_rules = [
     {
       description = "Allow traffic from public instances.security_group"
@@ -56,7 +56,7 @@ module "ecs-service-security-group" {
 module "load-balancer-security-group" {
   source = "../modules/security_group"
   vpc_id = module.vpc.vpc_id
-  security_group_name = "security_load_b"
+  security_group_name = substr("${var.app_name}-${var.region}-${var.environment}-securityGroupLB", 0,32 )
   ingress_rules = [
     {
       description = "Allow traffic from public instances.security_group"

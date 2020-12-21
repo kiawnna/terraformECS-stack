@@ -14,11 +14,17 @@ variable "private_subnet1_cidr_block" {
     type = string
     default = "10.200.2.0/24"
 }
-variable "app_name" {
-    type = string
-    default = "hello_world"
-}
 variable "region" {
-    type = string
-    default = "us-east-1"
+  type = string
+  default = "us-east-1"
+}
+
+variable "app_name" {
+  type = string
+  default = "Aleidy"
+}
+
+variable "environment" {
+  type = string
+  default = "dev"
 }

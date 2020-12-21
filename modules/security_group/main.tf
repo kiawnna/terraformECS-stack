@@ -36,6 +36,7 @@ resource "aws_security_group" "security_group" {
   }
 
   tags = {
-    Name = var.security_group_name
+     name = "${var.app_name}-${var.region}-${var.environment}-security_group"
+     Deployment_Method = "terraform"
   }
 }

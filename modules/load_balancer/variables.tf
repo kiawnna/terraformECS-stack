@@ -1,6 +1,3 @@
-variable "load_balancer_name" {
-  type = string
-}
 variable "internal" {
   type = bool
   default = "false"
@@ -29,4 +26,16 @@ variable "target_group_arn" {
 variable "domain" {
   type = string
   default = "test1.aleidy.kiastests.com"
+}
+variable "region" {
+  type = string
+  default = "us-east-1"
+}
+variable "app_name" {
+  type = string
+  default = "Aleidy"
+}
+variable "environment" {
+  type = string
+  default = "dev"
 }

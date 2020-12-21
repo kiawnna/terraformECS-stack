@@ -1,5 +1,5 @@
-resource "aws_lb_target_group" "test" {
-  name     = "test"
+resource "aws_lb_target_group" "My_lb_Ale" {
+  name     = substr("${var.app_name}-${var.region}-${var.environment}-targetGroup", 0,32 )
   port     = var.port
   protocol = var.protocol
   vpc_id   = var.vpc

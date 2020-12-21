@@ -1,5 +1,3 @@
-
-
 variable "desired_capacity" {
   type = number
   default = 1
@@ -20,4 +18,16 @@ variable "subnet_id" {
 }
 variable "target_group_arns" {
  type = list(string)
+}
+variable "region" {
+  type = string
+  default = "us-east-1"
+}
+variable "app_name" {
+  type = string
+  default = "Aleidy"
+}
+variable "environment" {
+  type = string
+  default = "dev"
 }

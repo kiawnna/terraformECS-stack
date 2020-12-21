@@ -1,6 +1,5 @@
-
 resource "aws_ecs_cluster" "foo" {
-  name               = "clue"
+  name               = substr("${var.app_name}-${var.region}-${var.environment}-ecsCluster", 0,32 )
   capacity_providers = [aws_ecs_capacity_provider.test.name]
 
   default_capacity_provider_strategy {
@@ -10,7 +9,7 @@ resource "aws_ecs_cluster" "foo" {
 }
 
 resource "aws_ecs_capacity_provider" "test" {
-  name = "test"
+  name               = substr("${var.app_name}-${var.region}-${var.environment}-capProvider", 0,32 )
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = var.auto_scaling_group_arn
@@ -25,11 +24,11 @@ resource "aws_ecs_capacity_provider" "test" {
 }
 
 resource "aws_cloudwatch_log_group" "log_group" {
-  name = "/ecs/aleidy-group"
+  name             = substr("${var.app_name}-${var.region}-${var.environment}-logGroup", 0,32 )
 }
 
 resource "aws_ecs_service" "example" {
-  name            = "example"
+  name            = substr("${var.app_name}-${var.region}-${var.environment}-ecsService", 0,32 )
   cluster         = aws_ecs_cluster.foo.id
   task_definition = aws_ecs_task_definition.service.arn
   desired_count   = 1
@@ -51,19 +50,20 @@ resource "aws_ecs_service" "example" {
 }
 
 locals {
+  cluster_name = substr("${var.app_name}-${var.region}-${var.environment}-ecsCluster", 0,32 )
   user_data = <<EOF
  #! /bin/bash
- echo "ECS_CLUSTER=clue" >> /etc/ecs/ecs.config
+ echo "ECS_CLUSTER=${local.cluster_name}" >> /etc/ecs/ecs.config
 EOF
 }
 
 resource "aws_launch_configuration" "as_conf" {
-  name_prefix                 = "terraform-lc-example-"
+  name_prefix                 = substr("${var.app_name}-${var.region}-${var.environment}-launchConfig", 0,32 )
   image_id                    = var.image_id
   instance_type               = var.instance_type
   iam_instance_profile        = aws_iam_instance_profile.test_profile.arn
   security_groups             = [var.launch-config-security-group]
-  key_name = "ale-us-east-1"
+  key_name                    = "ale-us-east-1"
   associate_public_ip_address = true
   user_data                   = base64encode(local.user_data)
 
@@ -73,21 +73,21 @@ resource "aws_launch_configuration" "as_conf" {
 }
 
 resource "aws_iam_instance_profile" "test_profile" {
-  name = "test_profile"
-  role = aws_iam_role.ec2-role.name
+  name               = substr("${var.app_name}-${var.region}-${var.environment}-instanceProfile", 0,32 )
+  role               = aws_iam_role.ec2-role.name
 }
 
 resource "aws_ecs_task_definition" "service" {
   family             = "service"
   task_role_arn      = aws_iam_role.task_role.arn
   execution_role_arn = aws_iam_role.task_execution_role.arn
-  network_mode = "awsvpc"
+  network_mode       = "awsvpc"
 
   container_definitions = <<-EOF
 [
   {
     "name": "${var.container_name}",
-    "image": "862989290375.dkr.ecr.us-east-1.amazonaws.com/sample-express-app:latest",
+    "image": "862989290375.dkr.ecr.us-east-1.amazonaws.com/myapp1:latest",
     "memory": 756,
     "essential": true,
     "portMappings": [
@@ -99,7 +99,7 @@ resource "aws_ecs_task_definition" "service" {
       "logDriver": "awslogs",
       "options": {
         "awslogs-region": "us-east-1",
-        "awslogs-group": "/ecs/aleidy-group"
+        "awslogs-group": "${aws_cloudwatch_log_group.log_group.name}"
       }
     }
   }
@@ -110,7 +110,7 @@ EOF
 # IAM ROLES AND POLICY FOR ECS SERVICE
 
 resource "aws_iam_role" "task_role" {
-  name = "task_role"
+  name               = substr("${var.app_name}-${var.region}-${var.environment}-taskrole", 0,32 )
 
   assume_role_policy = <<EOF
 {
@@ -130,7 +130,7 @@ EOF
 }
 
 resource "aws_iam_role" "task_execution_role" {
-  name = "task_execution_role"
+  name               = substr("${var.app_name}-${var.region}-${var.environment}-taskExRole", 0,32 )
 
   assume_role_policy = <<EOF
 {
@@ -150,7 +150,7 @@ EOF
 }
 
 resource "aws_iam_role" "ec2-role" {
-  name = "ec2-role"
+  name = substr("${var.app_name}-${var.region}-${var.environment}-ec2_role", 0,32 )
   path = "/"
 
   assume_role_policy = <<EOF
@@ -171,7 +171,7 @@ EOF
 }
 
 resource "aws_iam_policy" "task_policy" {
-  name = "ecs_task_policy"
+  name = substr("${var.app_name}-${var.region}-${var.environment}-taskPolicy", 0,32 )
   path = "/"
 
   policy = <<EOF
@@ -191,13 +191,13 @@ EOF
 }
 
 resource "aws_iam_policy_attachment" "test-attach" {
-  name       = "task-attachment"
+  name       = substr("${var.app_name}-${var.region}-${var.environment}-policyAttach", 0,32 )
   roles      = [aws_iam_role.task_role.name]
   policy_arn = aws_iam_policy.task_policy.arn
 }
 
 resource "aws_iam_policy" "task_execution_policy" {
-  name        = "task_execution_policy"
+  name        = substr("${var.app_name}-${var.region}-${var.environment}-taskExPol", 0,32 )
   path        = "/"
   description = "My test policy"
 
@@ -234,13 +234,13 @@ resource "aws_iam_policy" "task_execution_policy" {
 }
 
 resource "aws_iam_policy_attachment" "task_execution_rp_attached" {
-  name       = "task-attachment"
+  name       = substr("${var.app_name}-${var.region}-${var.environment}-policyAttach1", 0,32 )
   roles      = [aws_iam_role.task_execution_role.name]
   policy_arn = aws_iam_policy.task_execution_policy.arn
 }
 
 resource "aws_iam_policy" "ec2_policy" {
-  name = "ec2_policy"
+  name = substr("${var.app_name}-${var.region}-${var.environment}-ec2Policy", 0,32 )
   path = "/"
 
   policy = <<-EOF
@@ -283,7 +283,7 @@ resource "aws_iam_policy" "ec2_policy" {
 }
 
 resource "aws_iam_policy_attachment" "ec2_rp_attach" {
-  name       = "task-attachment"
+  name       = substr("${var.app_name}-${var.region}-${var.environment}-iamPolicy", 0,32 )
   roles      = [aws_iam_role.ec2-role.name]
   policy_arn = aws_iam_policy.ec2_policy.arn
 }

@@ -1,13 +1,13 @@
 resource "aws_lb" "ALB" {
-  name               = var.load_balancer_name
+  name               = substr("${var.app_name}-${var.region}-${var.environment}-loadbalancer", 0,32 )
   internal           = var.internal
   load_balancer_type = var.load_balancer_type
   security_groups    = var.security_groups
   subnets            = var.subnets
 
   tags = {
-   name = "ALB"
-   Deployment_Method = "production"
+   name = "${var.app_name}-${var.region}-${var.environment}-loadbalancer"
+   Deployment_Method = "terraform"
   }
 }
 resource "aws_lb_listener" "port-80-traffic" {
