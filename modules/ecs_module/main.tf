@@ -82,12 +82,11 @@ resource "aws_ecs_task_definition" "service" {
   task_role_arn      = aws_iam_role.task_role.arn
   execution_role_arn = aws_iam_role.task_execution_role.arn
   network_mode       = "awsvpc"
-
   container_definitions = <<-EOF
 [
   {
     "name": "${var.container_name}",
-    "image": "862989290375.dkr.ecr.us-east-1.amazonaws.com/myapp1:latest",
+    "image": "${var.container_image}",
     "memory": 756,
     "essential": true,
     "portMappings": [

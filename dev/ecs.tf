@@ -31,6 +31,7 @@ module "ecs_module" {
   auto_scaling_group_arn       = module.autoscaling_group.autoscaling_group_arn
   target_group_arn             = module.target_group.target_group_arn
   container_name               = "Aleidy"
+  container_image              = "862989290375.dkr.ecr.us-east-1.amazonaws.com/myapp1:latest"
   region                       = var.region
   environment                  = var.environment
   container_port               = 80

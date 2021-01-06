@@ -41,9 +41,22 @@ resource "aws_subnet" "public-2" {
     Deployment_Method = "terraform"
   }
 }
+
+# Public subnet 3.
+resource "aws_subnet" "public-3" {
+  availability_zone = "${var.region}c"
+  vpc_id = aws_vpc.ale_vpc.id
+  cidr_block = var.public_subnet3_cidr_block
+
+  tags = {
+    name = "${var.app_name}-${var.region}-${var.environment}-public-subnet3"
+    Deployment_Method = "terraform"
+  }
+}
+
 # Private subnet 1.
 resource "aws_subnet" "private_1" {
-  availability_zone = "${var.region}b"
+  availability_zone = "${var.region}a"
   vpc_id = aws_vpc.ale_vpc.id
   cidr_block = var.private_subnet1_cidr_block
 
@@ -52,6 +65,31 @@ resource "aws_subnet" "private_1" {
     Deployment_Method = "terraform"
   }
 }
+
+# Private subnet 2.
+resource "aws_subnet" "private_2" {
+  availability_zone = "${var.region}b"
+  vpc_id = aws_vpc.ale_vpc.id
+  cidr_block = var.private_subnet2_cidr_block
+
+  tags = {
+    name = "${var.app_name}-${var.region}-${var.environment}-private-subnet2"
+    Deployment_Method = "terraform"
+  }
+}
+
+# Private subnet 3.
+resource "aws_subnet" "private_3" {
+  availability_zone = "${var.region}c"
+  vpc_id = aws_vpc.ale_vpc.id
+  cidr_block = var.private_subnet3_cidr_block
+
+  tags = {
+    name = "${var.app_name}-${var.region}-${var.environment}-private-subnet3"
+    Deployment_Method = "terraform"
+  }
+}
+
 # Nat gateway set up in public-subnet-1.
 resource "aws_nat_gateway" "nat-gw" {
  allocation_id = aws_eip.nat.id
@@ -110,8 +148,27 @@ resource "aws_route_table_association" "rta-public-2" {
  subnet_id = aws_subnet.public-2.id
  route_table_id = aws_route_table.public_route.id
 }
+
+# Public route table association between public-subnet-3 and the public route table.
+resource "aws_route_table_association" "rta-public-3" {
+ subnet_id = aws_subnet.public-3.id
+ route_table_id = aws_route_table.public_route.id
+}
+
 # Private route table association between public-subnet-2 and the public route table.
 resource "aws_route_table_association" "rout_private_1" {
  subnet_id = aws_subnet.private_1.id
+ route_table_id = aws_route_table.private_route.id
+}
+
+# Private route table association between public-subnet-2 and the public route table.
+resource "aws_route_table_association" "rout_private_2" {
+ subnet_id = aws_subnet.private_2.id
+ route_table_id = aws_route_table.private_route.id
+}
+
+# Private route table association between public-subnet-2 and the public route table.
+resource "aws_route_table_association" "rout_private_3" {
+ subnet_id = aws_subnet.private_3.id
  route_table_id = aws_route_table.private_route.id
 }
