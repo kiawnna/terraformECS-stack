@@ -1,14 +1,14 @@
 # Virtual private cloud with custom cidr block.
 resource "aws_vpc" "ale_vpc" {
- cidr_block = var.vpc_cidr_block
+  cidr_block = var.vpc_cidr_block
 
- tags = {
-   name = "${var.app_name}-${var.region}-${var.environment}-vpc"
-   Deployment_Method = "terraform"
- }
+  tags = {
+    name = "${var.app_name}-${var.region}-${var.environment}-vpc"
+    Deployment_Method = "terraform"
+  }
 }
-
 # Internet gateway attached to VPC.
+
 resource "aws_internet_gateway" "mainIG" {
   vpc_id = aws_vpc.ale_vpc.id
 

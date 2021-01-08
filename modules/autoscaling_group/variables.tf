@@ -14,7 +14,7 @@ variable "launch_config_id" {
   type = string
 }
 variable "subnet_id" {
-  type = string
+  type = list(string)
 }
 variable "target_group_arns" {
  type = list(string)
