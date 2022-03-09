@@ -25,7 +25,6 @@ variable "target_group_arn" {
 }
 variable "domain" {
   type = string
-  default = "test1.aleidy.kiastests.com"
 }
 variable "region" {
   type = string
@@ -33,7 +32,6 @@ variable "region" {
 }
 variable "app_name" {
   type = string
-  default = "Aleidy"
 }
 variable "environment" {
   type = string

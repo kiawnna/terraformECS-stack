@@ -6,6 +6,11 @@ max_size            = var.max_size
 min_size            = var.min_size
 //target_group_arns = var.target_group_arns
 launch_configuration    = var.launch_config_id
+    tag {
+    key                 = "AmazonECSManaged"
+    value               = ""
+    propagate_at_launch = true
+  }
 }
 
 

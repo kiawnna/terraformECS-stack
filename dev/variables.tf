@@ -4,7 +4,7 @@ variable "region" {
 }
 variable "app_name" {
   type = string
-  default = "Aleidy"
+  default = "kia"
 }
 variable "environment" {
   type = string
